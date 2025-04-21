@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import ItemCard from './ItemCard';
 import UsedItemsList from './UsedItemsList';
+import ShoppingList from '../hub/ShoppingList';
 import { Item } from '../../types';
 import { useApp } from '../../contexts/AppContext';
 import { filterItemsBySearchTerm } from '../../utils/expiryUtils';
@@ -68,7 +69,8 @@ const ItemList: React.FC = () => {
         )}
       </div>
       
-      <div className="lg:w-1/4">
+      <div className="lg:w-1/4 space-y-6">
+        <ShoppingList />
         <UsedItemsList usedItems={filteredUsedItems} />
       </div>
     </div>

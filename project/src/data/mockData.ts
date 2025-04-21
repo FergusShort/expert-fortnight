@@ -159,6 +159,101 @@ export const allItems = [
   ...mockCleaningItems,
 ];
 
+// Mock shopping list
+export const mockShoppingList: ShoppingListItem[] = [
+  {
+    id: '1',
+    name: 'Milk',
+    quantity: 1,
+    unit: 'liter',
+    added: new Date(),
+  },
+  {
+    id: '2',
+    name: 'Eggs',
+    quantity: 12,
+    unit: 'pcs',
+    added: new Date(),
+  },
+  {
+    id: '3',
+    name: 'Fresh Tomatoes',
+    quantity: 500,
+    unit: 'g',
+    added: new Date(),
+  },
+  {
+    id: '4',
+    name: 'Ground Coffee',
+    quantity: 250,
+    unit: 'g',
+    added: new Date(),
+  },
+  {
+    id: '5',
+    name: 'Greek Yogurt',
+    quantity: 500,
+    unit: 'g',
+    added: new Date(),
+  },
+  {
+    id: '6',
+    name: 'Whole Grain Bread',
+    quantity: 1,
+    unit: 'loaf',
+    added: new Date(),
+  },
+  {
+    id: '7',
+    name: 'Baby Spinach',
+    quantity: 200,
+    unit: 'g',
+    added: new Date(),
+  },
+  {
+    id: '8',
+    name: 'Chicken Thighs',
+    quantity: 1,
+    unit: 'kg',
+    added: new Date(),
+  }
+];
+
+// Mock used items
+export const mockUsedItems: UsedItem[] = [
+  {
+    id: '1',
+    name: 'Tomatoes',
+    category: 'food',
+    usedDate: new Date(),
+    addedToShoppingList: true,
+  },
+  {
+    id: '2',
+    name: 'Pasta',
+    category: 'food',
+    usedDate: new Date(),
+    addedToShoppingList: false,
+  },
+];
+
+// Mock function to get items by category
+export const getItemsByCategory = (category: Category): Item[] => {
+  return allItems.filter(item => item.category === category);
+};
+
+// Mock function to sort items by expiry date
+export const sortItemsByExpiry = (items: Item[]): Item[] => {
+  return [...items].sort((a, b) => a.expiryDate.getTime() - b.expiryDate.getTime());
+};
+
+// Mock function to get recipes by ingredient
+export const getRecipesByIngredient = (ingredient: string): Recipe[] => {
+  return mockRecipes.filter(recipe => 
+    recipe.ingredients.some(i => i.toLowerCase().includes(ingredient.toLowerCase()))
+  );
+};
+
 // Mock recipes
 export const mockRecipes: Recipe[] = [
   {
@@ -224,56 +319,3 @@ export const mockRecipes: Recipe[] = [
     imageUrl: 'https://images.pexels.com/photos/4194614/pexels-photo-4194614.jpeg?auto=compress&cs=tinysrgb&w=800',
   },
 ];
-
-// Mock shopping list
-export const mockShoppingList: ShoppingListItem[] = [
-  {
-    id: '1',
-    name: 'Milk',
-    quantity: 1,
-    unit: 'liter',
-    added: new Date(),
-  },
-  {
-    id: '2',
-    name: 'Eggs',
-    quantity: 12,
-    unit: 'pcs',
-    added: new Date(),
-  },
-];
-
-// Mock used items
-export const mockUsedItems: UsedItem[] = [
-  {
-    id: '1',
-    name: 'Tomatoes',
-    category: 'food',
-    usedDate: new Date(),
-    addedToShoppingList: true,
-  },
-  {
-    id: '2',
-    name: 'Pasta',
-    category: 'food',
-    usedDate: new Date(),
-    addedToShoppingList: false,
-  },
-];
-
-// Mock function to get items by category
-export const getItemsByCategory = (category: Category): Item[] => {
-  return allItems.filter(item => item.category === category);
-};
-
-// Mock function to sort items by expiry date
-export const sortItemsByExpiry = (items: Item[]): Item[] => {
-  return [...items].sort((a, b) => a.expiryDate.getTime() - b.expiryDate.getTime());
-};
-
-// Mock function to get recipes by ingredient
-export const getRecipesByIngredient = (ingredient: string): Recipe[] => {
-  return mockRecipes.filter(recipe => 
-    recipe.ingredients.some(i => i.toLowerCase().includes(ingredient.toLowerCase()))
-  );
-};

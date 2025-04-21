@@ -16,7 +16,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="container mx-auto px-4">
           <div className="text-center text-gray-500 text-sm">
             <p>&copy; {new Date().getFullYear()} SmartExpire. All rights reserved.</p>
-            <p className="mt-2">Helping you reduce waste and save money.</p>
+            <p className="mt-2">Helping you do your bit</p>
           </div>
         </div>
       </footer>

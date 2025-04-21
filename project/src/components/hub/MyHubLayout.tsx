@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { CreditCard, FileText, ShoppingCart } from 'lucide-react';
+import { CreditCard, FileText } from 'lucide-react';
 import Card, { CardBody } from '../ui/Card';
 import SmartCard from './SmartCard';
 import ReceiptScanner from './ReceiptScanner';
-import ShoppingList from './ShoppingList';
 
 const MyHubLayout: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'card' | 'receipts' | 'shopping'>('card');
+  const [activeTab, setActiveTab] = useState<'card' | 'receipts'>('card');
   
   return (
     <div>
@@ -33,22 +32,11 @@ const MyHubLayout: React.FC = () => {
             <FileText size={18} className="mr-2" />
             <span>Receipts</span>
           </button>
-          
-          <button 
-            className={`flex items-center px-6 py-3 ${
-              activeTab === 'shopping' ? 'bg-green-50 text-green-700 border-b-2 border-green-500' : 'text-gray-600'
-            }`}
-            onClick={() => setActiveTab('shopping')}
-          >
-            <ShoppingCart size={18} className="mr-2" />
-            <span>Shopping List</span>
-          </button>
         </div>
         
         <div className="p-6">
           {activeTab === 'card' && <SmartCard />}
           {activeTab === 'receipts' && <ReceiptScanner />}
-          {activeTab === 'shopping' && <ShoppingList />}
         </div>
       </div>
       
