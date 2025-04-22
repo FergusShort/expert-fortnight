@@ -21,8 +21,8 @@ const HomePage: React.FC = () => {
 
   // Count items by expiry status
   const expiringSoon = items.filter((item) => {
-    if (!item.expiryDate) return false;
-    const expiryDate = new Date(item.expiryDate);
+    if (!item.expiry_date) return false;
+    const expiryDate = new Date(item.expiry_date);
     const today = new Date();
     const diffTime = expiryDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

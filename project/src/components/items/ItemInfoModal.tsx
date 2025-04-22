@@ -31,8 +31,12 @@ const ItemInfoModal: React.FC<ItemInfoModalProps> = ({ item, onClose }) => {
         } else {
           setItemInfo(data);
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unknown error occurred');
+        }
       } finally {
         setLoading(false);
       }
@@ -73,9 +77,9 @@ const ItemInfoModal: React.FC<ItemInfoModalProps> = ({ item, onClose }) => {
         </div>
 
         <div className="p-4">
-          {item.imageUrl && (
+          {item.image_url && (
             <img
-              src={item.imageUrl}
+              src={item.image_url}
               alt={item.name}
               className="w-full h-48 object-cover rounded-lg mb-4"
             />
@@ -95,7 +99,7 @@ const ItemInfoModal: React.FC<ItemInfoModalProps> = ({ item, onClose }) => {
                 <div className="font-medium">{item.opened ? 'Opened' : 'Unopened'}</div>
 
                 <div className="text-gray-600">Expiry:</div>
-                <div className="font-medium">{getExpiryStatusText(item.expiryDate)}</div>
+                <div className="font-medium">{getExpiryStatusText(item.expiry_date || new Date())}</div>
               </div>
             </div>
 

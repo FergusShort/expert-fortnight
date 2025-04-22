@@ -11,7 +11,7 @@ import HomePage from "./pages/HomePage";
 import ListPage from "./pages/ListPage";
 import RecommendationsPage from "./pages/RecommendationsPage";
 import HubPage from "./pages/HubPage";
-import AuthForm from "./components/Authform";
+import AuthForm from "./components/Auth/Authform";
 import { supabase } from "./utils/supabase"; // Import your Supabase client
 import { Session } from '@supabase/supabase-js'; // Import the Session type
 

@@ -21,17 +21,17 @@ const ItemCard: React.FC<ItemCardProps> = ({
   const [showInfo, setShowInfo] = useState(false);
   const [showUsedOptions, setShowUsedOptions] = useState(false);
   
-  const expiryStatusClass = getExpiryStatusClass(item.expiryDate);
-  const expiryText = getExpiryStatusText(item.expiryDate);
+  const expiryStatusClass = getExpiryStatusClass(item.expiry_date || new Date());
+  const expiryText = getExpiryStatusText(item.expiry_date || new Date());
 
   return (
     <>
       <Card className="h-full">
         <CardBody className="p-0">
-          {item.imageUrl && (
+          {item.image_url && (
             <div className="relative h-40 overflow-hidden">
               <img 
-                src={item.imageUrl} 
+                src={item.image_url} 
                 alt={item.name} 
                 className="w-full h-full object-cover"
               />

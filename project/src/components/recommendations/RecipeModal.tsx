@@ -40,9 +40,9 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
           </div>
         </div>
         
-        {recipe.imageUrl && (
+        {recipe.image_url && (
           <img 
-            src={recipe.imageUrl} 
+            src={recipe.image_url} 
             alt={recipe.title} 
             className="w-full h-64 object-cover"
           />

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Timer, Download } from 'lucide-react';
 import Button from '../ui/Button';
+import { supabase } from '../../utils/supabase'; // Import your Supabase client
 
 // Mock barcode generation - in a real app, we would use a barcode library
 const generateBarcodePattern = (): string => {
@@ -15,6 +16,40 @@ const generateBarcodePattern = (): string => {
 const mockUserId = "SE-" + Math.floor(10000000 + Math.random() * 90000000);
 
 const SmartCard: React.FC = () => {
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [lastName, setLastName] = useState<string | null>(null);
+
+  const getDisplayName = (firstName?: string | null, lastName?: string | null): string => {
+    if (firstName && lastName) {
+      return `${firstName} ${lastName}`;
+    }
+    if (firstName) {
+      return firstName;
+    }
+    if (lastName) {
+      return lastName;
+    }
+    return 'User'; // Default name if no first or last name is available
+  };
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.user_metadata) {
+          setFirstName(user.user_metadata.first_name as string | null);
+          setLastName(user.user_metadata.last_name as string | null);
+        }
+      } catch (error) {
+        console.error("Error fetching user session:", error);
+      }
+    };
+
+    fetchUserName();
+  }, []);
+
+  const cardholderName = getDisplayName(firstName, lastName);
+
   return (
     <div className="flex flex-col items-center max-w-lg mx-auto">
       <div className="bg-gradient-to-r from-green-500 to-green-700 rounded-xl w-full p-6 text-white shadow-lg transform transition-transform hover:scale-105 duration-300">
@@ -28,36 +63,36 @@ const SmartCard: React.FC = () => {
             <p className="font-bold">{mockUserId}</p>
           </div>
         </div>
-        
+
         <div className="mb-5">
           <p className="text-xs opacity-80 mb-1">Cardholder</p>
-          <p className="font-semibold text-lg">Jane Smith</p>
+          <p className="font-semibold text-lg">{cardholderName}</p>
         </div>
-        
+
         <div className="bg-white p-4 rounded-lg relative overflow-hidden">
           <div className="absolute inset-0 flex items-center justify-center opacity-10">
             <Timer size={120} className="text-green-500" />
           </div>
-          
+
           <div className="relative h-16 flex items-center">
             <div dangerouslySetInnerHTML={{ __html: generateBarcodePattern() }} className="flex h-full"></div>
           </div>
-          
+
           <p className="text-center mt-2 text-sm font-mono text-gray-700">{mockUserId}</p>
         </div>
       </div>
-      
+
       <div className="mt-8 text-center">
         <p className="text-gray-600 mb-4">
           Present your SmartCard at checkout to automatically track your purchases. Cashiers can scan this barcode to add items to your SmartExpire account.
         </p>
-        
+
         <div className="flex justify-center gap-4">
           <Button variant="outline" className="flex items-center">
             <Download size={16} className="mr-2" />
             Download
           </Button>
-          
+
           <Button variant="primary" className="flex items-center">
             Add to Apple Wallet
           </Button>

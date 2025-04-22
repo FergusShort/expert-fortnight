@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../utils/supabase";
+import { supabase } from "../../utils/supabase";
 
 const AuthForm = () => {
   const [email, setEmail] = useState("");
@@ -25,8 +25,7 @@ const AuthForm = () => {
             password,
             options: {
               data: {
-                first_name: firstName,
-                last_name: lastName,
+                // While Supabase Auth stores this, we'll also store in profiles
               },
             },
           });
@@ -40,8 +39,24 @@ const AuthForm = () => {
           "Sign up successful, verification email sent (if enabled)."
         );
         setVerificationSent(true); // Set verification sent message
-        // Optionally, you might want to prevent automatic navigation here
-        // and instruct the user to check their email.
+
+        // Create a profile in the public.profiles table
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .insert([
+            { user_id: response.data.user.id, first_name: firstName, last_name: lastName, email: email },
+          ]);
+
+        if (profileError) {
+          console.error("Error creating user profile:", profileError);
+          setError("Error creating user profile. Please try again.");
+          // You might want to handle this error more gracefully
+        } else {
+          console.log("User profile created successfully.");
+          // Optionally, you might want to prevent automatic navigation here
+          // and instruct the user to check their email.
+          // navigate("/");
+        }
       } else if (isLogin && response.data?.user?.id) {
         console.log("Login successful:", response.data);
         navigate("/");

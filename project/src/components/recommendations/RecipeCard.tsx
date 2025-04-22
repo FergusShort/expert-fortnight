@@ -17,10 +17,10 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onToggleFavorite }) => 
     <>
       <Card hoverable className="h-full transition-all duration-300">
         <CardBody className="p-0">
-          {recipe.imageUrl && (
+          {recipe.image_url && (
             <div className="h-48 overflow-hidden">
               <img 
-                src={recipe.imageUrl} 
+                src={recipe.image_url} 
                 alt={recipe.title} 
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
               />

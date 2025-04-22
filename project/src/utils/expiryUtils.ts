@@ -60,7 +60,7 @@ export const getExpiryStatusClass = (expiryDate: Date): string => {
 
 // Sort items by expiry date (soonest first)
 export const sortItemsByExpiry = (items: Item[]): Item[] => {
-  return [...items].sort((a, b) => a.expiryDate.getTime() - b.expiryDate.getTime());
+  return [...items].sort((a, b) => (a.expiry_date?.getTime() ?? 0) - (b.expiry_date?.getTime() ?? 0));
 };
 
 // Filter items by search term

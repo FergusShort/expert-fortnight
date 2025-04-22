@@ -15,8 +15,12 @@ const HubPage: React.FC = () => {
         const { data, error } = await supabase.from('items').select('*'); // Fetching all items
         if (error) throw error;
         setItems(data as Item[]); // Update state with fetched items
-      } catch (error: any) {
-        setError('Error fetching items: ' + error.message); // Handling any error
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError('Error fetching items: ' + error.message); // Handling any error
+        } else {
+          setError('An unknown error occurred'); // Fallback for non-Error types
+        }
       } finally {
         setLoading(false); // Stop loading once data is fetched
       }

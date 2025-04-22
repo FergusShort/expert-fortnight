@@ -3,7 +3,7 @@ import { Search } from 'lucide-react';
 import ItemCard from './ItemCard';
 import UsedItemsList from './UsedItemsList';
 import ShoppingList from '../hub/ShoppingList';
-import { Item } from '../../types';
+//import { Item } from '../../types';
 import { useApp } from '../../contexts/AppContext';
 import { filterItemsBySearchTerm } from '../../utils/expiryUtils';
 

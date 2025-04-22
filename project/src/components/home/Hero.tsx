@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, Clock, Leaf } from 'lucide-react';
+//import { ShoppingBag, Clock, Leaf } from 'lucide-react';
 import Button from '../ui/Button';
 import { Link } from 'react-router-dom';
 
