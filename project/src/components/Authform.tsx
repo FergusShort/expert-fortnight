@@ -1,34 +1,57 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from '../utils/supabase';
+import { supabase } from "../utils/supabase";
+
 const AuthForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState("");
+  const [verificationSent, setVerificationSent] = useState(false); // New state
   const navigate = useNavigate();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setVerificationSent(false); // Reset verification message on new attempt
 
     try {
       const response = isLogin
         ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signUp({ email, password });
+        : await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                first_name: firstName,
+                last_name: lastName,
+              },
+            },
+          });
 
       console.log("Auth response:", response);
 
       if (response.error) {
         setError(response.error.message);
-      } else if (response.data) {
-        console.log("Authentication successful:", response.data);
+      } else if (!isLogin && response.data?.user?.id) {
+        console.log(
+          "Sign up successful, verification email sent (if enabled)."
+        );
+        setVerificationSent(true); // Set verification sent message
+        // Optionally, you might want to prevent automatic navigation here
+        // and instruct the user to check their email.
+      } else if (isLogin && response.data?.user?.id) {
+        console.log("Login successful:", response.data);
         navigate("/");
       } else {
         setError("Unexpected response format.");
       }
     } catch (err) {
-      setError(`An error occurred: ${err instanceof Error ? err.message : err}`);
+      setError(
+        `An error occurred: ${err instanceof Error ? err.message : err}`
+      );
       console.error(err);
     }
   };
@@ -103,6 +126,13 @@ const AuthForm = () => {
     fontSize: "0.9rem",
   };
 
+  const verificationStyle = {
+    color: "#1976D2",
+    marginTop: "10px",
+    textAlign: "center",
+    fontSize: "0.9rem",
+  };
+
   const switchButtonStyle = {
     backgroundColor: "transparent",
     border: "none",
@@ -123,6 +153,26 @@ const AuthForm = () => {
       <div style={authFormStyle}>
         <h2 style={headingStyle}>{isLogin ? "Login" : "Sign Up"}</h2>
         <form onSubmit={handleAuth} style={formStyle}>
+          {!isLogin && (
+            <>
+              <input
+                type="text"
+                placeholder="First Name"
+                value={firstName}
+                required
+                onChange={(e) => setFirstName(e.target.value)}
+                style={inputStyle}
+              />
+              <input
+                type="text"
+                placeholder="Last Name"
+                value={lastName}
+                required
+                onChange={(e) => setLastName(e.target.value)}
+                style={inputStyle}
+              />
+            </>
+          )}
           <input
             type="email"
             placeholder="Email"
@@ -142,20 +192,36 @@ const AuthForm = () => {
           <button
             type="submit"
             style={buttonStyle}
-            onMouseOver={(e) => Object.assign(e.currentTarget.style, buttonHoverStyle)}
-            onMouseOut={(e) => Object.assign(e.currentTarget.style, buttonStyle)}
+            onMouseOver={(e) =>
+              Object.assign(e.currentTarget.style, buttonHoverStyle)
+            }
+            onMouseOut={(e) =>
+              Object.assign(e.currentTarget.style, buttonStyle)
+            }
           >
             {isLogin ? "Login" : "Sign Up"}
           </button>
           <p style={errorStyle}>{error}</p>
+          {verificationSent && (
+            <p style={verificationStyle}>
+              A verification email has been sent to your address. Please check
+              your inbox (and spam folder) to verify your account.
+            </p>
+          )}
         </form>
         <button
           onClick={() => setIsLogin(!isLogin)}
           style={switchButtonStyle}
-          onMouseOver={(e) => Object.assign(e.currentTarget.style, switchButtonHoverStyle)}
-          onMouseOut={(e) => Object.assign(e.currentTarget.style, switchButtonStyle)}
+          onMouseOver={(e) =>
+            Object.assign(e.currentTarget.style, switchButtonHoverStyle)
+          }
+          onMouseOut={(e) =>
+            Object.assign(e.currentTarget.style, switchButtonStyle)
+          }
         >
-          {isLogin ? "Need an account? Sign up" : "Already have an account? Log in"}
+          {isLogin
+            ? "Need an account? Sign up"
+            : "Already have an account? Log in"}
         </button>
       </div>
     </div>
