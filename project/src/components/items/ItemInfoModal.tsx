@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import Button from '../ui/Button';
-import { Item } from '../../types';
+import { Item, ItemInfo } from '../../types';
 import { getExpiryStatusText } from '../../utils/expiryUtils';
+import { supabase } from '../../utils/supabase'; // Import your Supabase client
 
 interface ItemInfoModalProps {
   item: Item;
@@ -10,6 +11,52 @@ interface ItemInfoModalProps {
 }
 
 const ItemInfoModal: React.FC<ItemInfoModalProps> = ({ item, onClose }) => {
+  const [itemInfo, setItemInfo] = useState<ItemInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchItemDetails = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error } = await supabase
+        .from('item_info')
+        .select('*')
+        .eq('item_id', item.id)
+        .single<ItemInfo>();
+
+        if (error) {
+          setError(error.message);
+        } else {
+          setItemInfo(data);
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItemDetails();
+  }, [item.id]);
+
+  if (loading) {
+    return <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">Loading item details...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        Error loading item details: {error}
+      </div>
+    );
+  }
+
+  if (!itemInfo) {
+    return null; // Or a message indicating no extra info is available
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
@@ -24,70 +71,70 @@ const ItemInfoModal: React.FC<ItemInfoModalProps> = ({ item, onClose }) => {
             <X size={20} />
           </Button>
         </div>
-        
+
         <div className="p-4">
           {item.imageUrl && (
-            <img 
-              src={item.imageUrl} 
-              alt={item.name} 
+            <img
+              src={item.imageUrl}
+              alt={item.name}
               className="w-full h-48 object-cover rounded-lg mb-4"
             />
           )}
-          
+
           <div className="space-y-4">
             <div>
               <h3 className="font-semibold text-green-700 mb-1">Basic Information</h3>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div className="text-gray-600">Category:</div>
                 <div className="font-medium capitalize">{item.category}</div>
-                
+
                 <div className="text-gray-600">Quantity:</div>
                 <div className="font-medium">{item.quantity} {item.unit}</div>
-                
+
                 <div className="text-gray-600">Status:</div>
                 <div className="font-medium">{item.opened ? 'Opened' : 'Unopened'}</div>
-                
+
                 <div className="text-gray-600">Expiry:</div>
                 <div className="font-medium">{getExpiryStatusText(item.expiryDate)}</div>
               </div>
             </div>
-            
-            {item.info && (
+
+            {itemInfo && (
               <div>
                 <h3 className="font-semibold text-green-700 mb-1">Storage & Usage Information</h3>
                 <div className="space-y-2 text-sm">
-                  {item.info.bestBefore && (
+                  {itemInfo.bestBefore && (
                     <div>
                       <span className="text-gray-600">Best Before: </span>
-                      <span>{item.info.bestBefore}</span>
+                      <span>{itemInfo.bestBefore}</span>
                     </div>
                   )}
-                  
-                  {item.info.useBy && (
+
+                  {itemInfo.useBy && (
                     <div>
                       <span className="text-gray-600">Use By: </span>
-                      <span>{item.info.useBy}</span>
+                      <span>{itemInfo.useBy}</span>
                     </div>
                   )}
-                  
-                  {item.info.bestStored && (
+
+                  {itemInfo.bestStored && (
                     <div>
                       <span className="text-gray-600">Best Stored: </span>
-                      <span>{item.info.bestStored}</span>
+                      <span>{itemInfo.bestStored}</span>
                     </div>
                   )}
-                  
-                  {item.info.nutritionalInfo && (
+
+                  {itemInfo.nutritionalInfo && (
                     <div>
                       <span className="text-gray-600">Nutritional Info: </span>
-                      <span>{item.info.nutritionalInfo}</span>
+                      <span>{itemInfo.nutritionalInfo}</span>
                     </div>
                   )}
-                  
-                  {item.info.additional && (
+
+                  {itemInfo.additional && (
                     <div>
                       <span className="text-gray-600">Additional Info: </span>
-                      <span>{item.info.additional}</span>
+                      <span>{itemInfo.additional}</span>
                     </div>
                   )}
                 </div>
@@ -95,7 +142,7 @@ const ItemInfoModal: React.FC<ItemInfoModalProps> = ({ item, onClose }) => {
             )}
           </div>
         </div>
-        
+
         <div className="p-4 border-t">
           <Button variant="primary" fullWidth onClick={onClose}>
             Close

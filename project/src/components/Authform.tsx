@@ -67,7 +67,7 @@ const AuthForm = () => {
     color: "#333",
   };
 
-  const authFormStyle = {
+  const authFormStyle: React.CSSProperties = {
     backgroundColor: "white",
     borderRadius: "12px",
     padding: "25px",
@@ -78,7 +78,7 @@ const AuthForm = () => {
     gap: "15px",
   };
 
-  const headingStyle = {
+  const headingStyle: React.CSSProperties = {
     fontFamily: "'Montserrat', sans-serif",
     fontWeight: "700",
     color: "#2e7d32",
@@ -87,7 +87,7 @@ const AuthForm = () => {
     marginBottom: "1.5rem",
   };
 
-  const formStyle = {
+  const formStyle: React.CSSProperties = {
     display: "flex",
     flexDirection: "column",
     gap: "15px",
@@ -119,14 +119,14 @@ const AuthForm = () => {
     transform: "scale(1.02)",
   };
 
-  const errorStyle = {
+  const errorStyle: React.CSSProperties = {
     color: "#c62828",
     marginTop: "10px",
     textAlign: "center",
     fontSize: "0.9rem",
   };
 
-  const verificationStyle = {
+  const verificationStyle: React.CSSProperties = {
     color: "#1976D2",
     marginTop: "10px",
     textAlign: "center",

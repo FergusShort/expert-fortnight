@@ -23,11 +23,11 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
             <Button
               variant="outline"
               size="sm"
-              className={recipe.isFavorite ? 'text-red-500' : ''}
+              className={recipe.is_favorite ? 'text-red-500' : ''}
               onClick={() => onToggleFavorite(recipe.id)}
             >
-              <Heart size={16} fill={recipe.isFavorite ? 'currentColor' : 'none'} className="mr-1" />
-              {recipe.isFavorite ? 'Saved' : 'Save'}
+              <Heart size={16} fill={recipe.is_favorite ? 'currentColor' : 'none'} className="mr-1" />
+              {recipe.is_favorite ? 'Saved' : 'Save'}
             </Button>
             <Button
               variant="outline"

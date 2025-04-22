@@ -6,13 +6,12 @@ export interface Item {
   id: string; // Assuming UUID for items now
   name: string;
   category: Category;
-  expiryDate: Date | null;
+  expiry_date?: Date;
   opened: boolean;
   quantity: number;
   unit: string;
-  imageUrl?: string;
+  image_url?: string | null; // Keeping flexible as your SQL is text
   user_id?: string;
-  itemInfoId?: string; // Optional foreign key to item_info if you want to explicitly include it in the Item type
 }
 
 export interface ItemInfo {
@@ -34,42 +33,46 @@ export interface Profile {
 }
 
 export interface Receipt {
-  id: number; // Changed to number (int4 in SQL)
+  id: string; // Changed to number (int4 in SQL)
   date: Date | null; // timestamp in SQL
   store?: string;
   total?: number; // numeric in SQL
-  imageUrl?: string;
+  image_Url?: string;
   user_id?: string; // uuid in SQL
-  items?: Item[]; // Assuming you might want to include items here
 }
 
 export interface Recipe {
-  id: number; // Changed to number (int4 in SQL)
+  id: string; // Changed to number (int4 in SQL)
   title: string;
   type: string;
   ingredients: string[];
   instructions: string[];
   prepTime: number; // int4 in SQL
   cookTime: number; // int4 in SQL
-  imageUrl?: string;
+  image_url?: string;
   is_favorite?: boolean; // bool in SQL (note the underscore in the name)
   user_id?: string; // uuid in SQL
 }
 
 export interface ShoppingListItem {
-  id: number; // Changed to number (int4 in SQL)
+  id: string; // Changed to number (int4 in SQL)
   name: string;
   quantity: number; // int4 in SQL
   unit: string;
   added: Date | null; // timestamp in SQL
   user_id?: string; // uuid in SQL
+  image_url?: string | null; // Keeping flexible as your SQL is text
+  category: Category | string; // Keeping flexible as your SQL is text
 }
 
 export interface UsedItem {
   id: string; // text in SQL
   name: string;
   category: Category | string; // Keeping flexible as your SQL is text
-  usedDate: Date | null; // timestamp in SQL
-  addedToShoppingList: boolean;
-  user_id?: string; // uuid in SQL
+  quantity: number; // int4 in SQL
+  unit: string;
+  image_url?: string | null; // Keeping flexible as your SQL is text
+  used_date: Date | null; // timestamp in SQL
+  added_to_shopping_list: boolean;
+    user_id?: string; // uuid in SQL
 }

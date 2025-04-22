@@ -60,10 +60,10 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onToggleFavorite }) => 
           <Button 
             variant="outline" 
             size="sm" 
-            className={recipe.isFavorite ? 'text-red-500' : ''}
+            className={recipe.is_favorite ? 'text-red-500' : ''}
             onClick={() => onToggleFavorite(recipe.id)}
           >
-            <Heart size={16} fill={recipe.isFavorite ? 'currentColor' : 'none'} />
+            <Heart size={16} fill={recipe.is_favorite ? 'currentColor' : 'none'} />
           </Button>
           
           <Button 

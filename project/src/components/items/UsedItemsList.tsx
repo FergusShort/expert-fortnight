@@ -10,14 +10,20 @@ interface UsedItemsListProps {
 }
 
 const UsedItemsList: React.FC<UsedItemsListProps> = ({ usedItems }) => {
-  const { addToShoppingList } = useApp();
-  
-  const handleAddToShoppingList = (name: string) => {
-    addToShoppingList({
-      name,
-      quantity: 1,
-      unit: 'pcs',
+  const { addToShoppingList, removeFromUsedItems } = useApp(); // Assuming you'll create removeFromUsedItems
+
+  const handleAddToShoppingList = async (usedItem: UsedItem) => {
+    // Add the item to the shopping list
+    await addToShoppingList({
+      name: usedItem.name,
+      quantity: usedItem.quantity,
+      unit: usedItem.unit,
+      category: usedItem.category,
+      image_url: usedItem.image_url,
     });
+
+    // Remove the item from the used items list
+    await removeFromUsedItems(usedItem.id);
   };
 
   return (
@@ -25,7 +31,7 @@ const UsedItemsList: React.FC<UsedItemsListProps> = ({ usedItems }) => {
       <CardHeader className="bg-gray-50">
         <h3 className="text-lg font-semibold">Recently Used Items</h3>
       </CardHeader>
-      
+
       <CardBody className="p-0">
         {usedItems.length > 0 ? (
           <ul className="divide-y">
@@ -34,23 +40,23 @@ const UsedItemsList: React.FC<UsedItemsListProps> = ({ usedItems }) => {
                 <div>
                   <p className="font-medium">{item.name}</p>
                   <p className="text-sm text-gray-500">
-                    Used {new Date(item.usedDate).toLocaleDateString()}
+                    Used {item.used_date ? new Date(item.used_date).toLocaleDateString() : 'N/A'}
                   </p>
                 </div>
-                
-                {!item.addedToShoppingList && (
+
+                {!item.added_to_shopping_list && ( // Use the correct column name
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleAddToShoppingList(item.name)}
+                    onClick={() => handleAddToShoppingList(item)} // Pass the entire item
                     title="Add to shopping list"
                   >
                     <Plus size={16} className="mr-1" />
                     <ShoppingCart size={16} />
                   </Button>
                 )}
-                
-                {item.addedToShoppingList && (
+
+                {item.added_to_shopping_list && ( // Use the correct column name
                   <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
                     On list
                   </span>

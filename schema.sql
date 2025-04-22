@@ -62,8 +62,10 @@ CREATE TABLE public.shopping_list (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR NOT NULL,
     quantity INTEGER DEFAULT 1,
-    unit VARCHAR,
+    unit VARCHAR NOT NULL,
+    category VARCHAR NOT NULL,
     added TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::TEXT, now()) NOT NULL,
+    image_url VARCHAR,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL
 );
 
@@ -71,7 +73,10 @@ CREATE TABLE public.used_items (
     id UUID PRIMARY KEY,
     name VARCHAR NOT NULL,
     category TEXT NOT NULL,
+    quantity INTEGER DEFAULT 1,
+    unit VARCHAR NOT NULL,
     used_date TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::TEXT, now()) NOT NULL,
+    image_url VARCHAR,
     added_to_shopping_list BOOLEAN DEFAULT FALSE,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL
 );
