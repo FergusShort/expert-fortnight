@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import supabase from "../utils/supabase";
+import { supabase } from '../utils/supabase';
 import MyHubLayout from '../components/hub/MyHubLayout';
 import { Item } from '../types'; // Assuming Item is defined in types
 

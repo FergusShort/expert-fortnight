@@ -12,6 +12,7 @@ export interface Item {
   unit: string;
   info?: ItemInfo;
   imageUrl?: string;
+  user_id?: string; // Added user_id here
 }
 
 export interface ItemInfo {
@@ -33,6 +34,7 @@ export interface Recipe {
   cookTime: number;
   imageUrl?: string;
   isFavorite?: boolean;
+  user_id?: string; // Added user_id here
 }
 
 export interface ShoppingListItem {
@@ -41,11 +43,13 @@ export interface ShoppingListItem {
   quantity: number;
   unit: string;
   added: Date;
+  user_id?: string; // Added user_id here
 }
 
 export interface UsedItem extends Pick<Item, 'id' | 'name' | 'category'> {
   usedDate: Date;
   addedToShoppingList: boolean;
+  user_id?: string; // Added user_id here
 }
 
 export interface Receipt {
@@ -55,4 +59,5 @@ export interface Receipt {
   store?: string;
   total?: number;
   imageUrl?: string;
+  user_id?: string; // Added user_id here
 }
