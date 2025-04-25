@@ -9,7 +9,7 @@ import { AppProvider } from "./contexts/AppContext";
 import Layout from "./components/layout/Layout";
 import HomePage from "./pages/HomePage";
 import ListPage from "./pages/ListPage";
-import RecommendationsPage from "./pages/RecommendationsPage";
+import Recipes from "./pages/RecipesPage";
 import HubPage from "./pages/HubPage";
 import AuthForm from "./components/Auth/Authform";
 import { supabase } from "./utils/supabase"; // Import your Supabase client
@@ -69,11 +69,11 @@ function App() {
             }
           />
           <Route
-            path="/recommendations"
+            path="/Recipes"
             element={
               session ? (
                 <Layout>
-                  <RecommendationsPage />
+                  <Recipes />
                 </Layout>
               ) : (
                 <Navigate to="/login" replace />

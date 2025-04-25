@@ -1,3 +1,4 @@
+// AppContext.tsx
 import React, {
   createContext,
   useContext,
@@ -8,19 +9,25 @@ import React, {
 import { Item, Recipe, Category, ShoppingListItem, UsedItem } from "../types"; // Import Profile
 import { supabase } from "../utils/supabase"; // Import your Supabase client
 
+type AppCategory = Category | 'all'; // Define a new type
+
 interface AppContextProps {
   userId: string | undefined;
-  currentCategory: Category;
-  setCurrentCategory: (category: Category) => void;
+  currentCategory: AppCategory; // Use the new type
+  setCurrentCategory: (category: AppCategory) => void; // Use the new type
   items: Item[];
   usedItems: UsedItem[];
   shoppingList: ShoppingListItem[];
   recipes: Recipe[];
   favoriteRecipes: Recipe[];
+  foodSubcategories: string[]; // New state for food subcategories
   markItemAsUsed: (item: Item, addToShoppingList: boolean) => void;
   toggleItemOpened: (id: string) => void;
   addToShoppingList: (
-    item: Omit<ShoppingListItem, "id" | "added"> & { image_url?: string | null }
+    item: Omit<ShoppingListItem, "id" | "added"> & {
+      image_url?: string | null;
+      foodsubcategory?: string | null; // Include foodsubcategory
+    }
   ) => void;
   removeFromShoppingList: (id: string) => void;
   toggleFavoriteRecipe: (id: string) => void;
@@ -35,12 +42,21 @@ export const AppProvider: React.FC<{
   children: ReactNode;
   userId: string | undefined;
 }> = ({ children, userId }) => {
-  const [currentCategory, setCurrentCategory] = useState<Category>("food");
+  const [currentCategory, setCurrentCategory] = useState<AppCategory>("all"); // Initialize to 'all'
   const [items, setItems] = useState<Item[]>([]);
   const [usedItems, setUsedItems] = useState<UsedItem[]>([]);
   const [shoppingList, setShoppingList] = useState<ShoppingListItem[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [favoriteRecipes, setFavoriteRecipes] = useState<Recipe[]>([]);
+  const [foodSubcategories] = useState([
+    "produce",
+    "dairy",
+    "meat",
+    "bakery",
+    "canned",
+    "frozen",
+    "other",
+  ]); // Updated foodSubcategories
 
   useEffect(() => {
     if (userId) {
@@ -53,8 +69,6 @@ export const AppProvider: React.FC<{
       setFavoriteRecipes([]);
     }
   }, [userId]);
-
-
 
   const fetchData = async (currentUserId: string) => {
     try {
@@ -154,25 +168,29 @@ export const AppProvider: React.FC<{
         .eq("user_id", userId);
       if (deleteError) console.error("Error deleting item:", deleteError);
 
-      const usedItem: UsedItem = {
-        id: crypto.randomUUID(),
-        name: item.name,
-        category: item.category,
-        quantity: item.quantity,
-        unit: item.unit,
-        image_url: item.image_url || null,
-        used_date: new Date(),
-        added_to_shopping_list: shouldAddToShoppingList,
-        user_id: userId,
-      };
-      const { error: insertUsedError } = await supabase
-        .from("used_items")
-        .insert([usedItem]);
-      if (insertUsedError)
-        console.error("Error adding to used items:", insertUsedError);
+      if (!shouldAddToShoppingList) {
+        const usedItem: UsedItem = {
+          id: crypto.randomUUID(),
+          name: item.name,
+          category: item.category,
+          foodsubcategory: item.foodsubcategory || undefined, // Add foodsubcategory
+          quantity: item.quantity,
+          unit: item.unit,
+          image_url: item.image_url || null,
+          used_date: new Date(),
+          added_to_shopping_list: false, // Explicitly set to false
+          user_id: userId,
+        };
+        const { error: insertUsedError } = await supabase
+          .from("used_items")
+          .insert([usedItem]);
+        if (insertUsedError)
+          console.error("Error adding to used items:", insertUsedError);
+
+        setUsedItems((prevUsed) => [usedItem, ...prevUsed]);
+      }
 
       setItems((prevItems) => prevItems.filter((i) => i.id !== item.id));
-      setUsedItems((prevUsed) => [usedItem, ...prevUsed]);
 
       if (shouldAddToShoppingList) {
         addToShoppingList({
@@ -181,6 +199,7 @@ export const AppProvider: React.FC<{
           unit: item.unit,
           category: item.category,
           image_url: item.image_url || null,
+          foodsubcategory: item.foodsubcategory || undefined, // Pass foodsubcategory if it exists
         });
       }
     } catch (error) {
@@ -213,7 +232,10 @@ export const AppProvider: React.FC<{
   };
 
   const addToShoppingList = async (
-    item: Omit<ShoppingListItem, "id" | "added"> & { image_url?: string | null }
+    item: Omit<ShoppingListItem, "id" | "added"> & {
+      image_url?: string | null;
+      foodsubcategory?: string | null; // Receive foodsubcategory
+    }
   ) => {
     if (!userId) return;
     try {
@@ -223,6 +245,7 @@ export const AppProvider: React.FC<{
         quantity: item.quantity,
         unit: item.unit,
         category: item.category,
+        foodsubcategory: item.foodsubcategory || undefined, // Store foodsubcategory
         added: new Date(),
         user_id: userId,
         image_url: item.image_url || null,
@@ -231,7 +254,9 @@ export const AppProvider: React.FC<{
       const { data: savedItem, error: insertError } = await supabase
         .from("shopping_list")
         .insert([newItem])
-        .select("id, name, quantity, unit, category, added, user_id, image_url");
+        .select(
+          "id, name, quantity, unit, category, foodsubcategory, added, user_id, image_url"
+        );
 
       if (insertError)
         console.error("Error adding to shopping list:", insertError);
@@ -355,9 +380,11 @@ export const AppProvider: React.FC<{
         } else {
           const newItem: Omit<Item, "id" | "expiry_date"> & {
             image_url?: string | null;
+            foodsubcategory?: string | null; // Include foodsubcategory
           } = {
             name: listItem.name,
             category: listItem.category as Category,
+            foodsubcategory: listItem.foodsubcategory || undefined, // Store foodsubcategory
             opened: false,
             quantity: listItem.quantity,
             unit: listItem.unit,
@@ -402,6 +429,7 @@ export const AppProvider: React.FC<{
         shoppingList,
         recipes,
         favoriteRecipes,
+        foodSubcategories, // Expose foodSubcategories
         markItemAsUsed,
         toggleItemOpened,
         addToShoppingList,

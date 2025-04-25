@@ -15,9 +15,9 @@ const Card: React.FC<CardProps> = ({
 }) => {
   const baseClasses = 'bg-white rounded-lg shadow-md overflow-hidden';
   const hoverClasses = hoverable ? 'transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer' : '';
-  
+
   return (
-    <div 
+    <div
       className={`${baseClasses} ${hoverClasses} ${className}`}
       onClick={onClick}
     >
@@ -26,9 +26,9 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-export const CardHeader: React.FC<{ children: React.ReactNode; className?: string }> = ({ 
-  children, 
-  className = '' 
+export const CardHeader: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = ''
 }) => {
   return (
     <div className={`p-4 border-b ${className}`}>
@@ -37,20 +37,21 @@ export const CardHeader: React.FC<{ children: React.ReactNode; className?: strin
   );
 };
 
-export const CardBody: React.FC<{ children: React.ReactNode; className?: string }> = ({ 
-  children, 
-  className = '' 
+export const CardBody: React.FC<{ children: React.ReactNode; className?: string; style?: React.CSSProperties }> = ({
+  children,
+  className = '',
+  style // Add the style prop here
 }) => {
   return (
-    <div className={`p-4 ${className}`}>
+    <div className={`p-4 ${className}`} style={style}> {/* Apply the style prop to the div */}
       {children}
     </div>
   );
 };
 
-export const CardFooter: React.FC<{ children: React.ReactNode; className?: string }> = ({ 
-  children, 
-  className = '' 
+export const CardFooter: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = ''
 }) => {
   return (
     <div className={`p-4 border-t ${className}`}>

@@ -58,13 +58,13 @@ const Navigation: React.FC = () => {
             </NavLink>
 
             <NavLink
-              to="/recommendations"
+              to="/Recipes"
               className={({ isActive }) =>
                 `flex flex-col items-center text-sm ${isActive ? 'text-green-600' : 'text-gray-600 hover:text-green-500'}`
               }
             >
               <Search size={20} />
-              <span className="mt-1">Recommendations</span>
+              <span className="mt-1">Recipes</span>
             </NavLink>
 
             <NavLink

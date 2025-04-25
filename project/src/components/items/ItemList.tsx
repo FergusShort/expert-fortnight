@@ -3,7 +3,6 @@ import { Search } from 'lucide-react';
 import ItemCard from './ItemCard';
 import UsedItemsList from './UsedItemsList';
 import ShoppingList from '../hub/ShoppingList';
-//import { Item } from '../../types';
 import { useApp } from '../../contexts/AppContext';
 import { filterItemsBySearchTerm } from '../../utils/expiryUtils';
 
@@ -19,20 +18,26 @@ const ItemList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   
   // Filter items by category and search term
-  const filteredItems = items
-    .filter(item => item.category === currentCategory)
-    .filter(item => filterItemsBySearchTerm([item], searchTerm).length > 0);
+  const filteredItems = currentCategory === 'all'
+    ? filterItemsBySearchTerm(items, searchTerm) // Show all items if currentCategory is 'all'
+    : items
+        .filter(item => item.category === currentCategory)
+        .filter(item => filterItemsBySearchTerm([item], searchTerm).length > 0);
   
   // Filter used items by category
   const filteredUsedItems = usedItems.filter(
-    item => item.category === currentCategory
+    item => currentCategory === 'all' || item.category === currentCategory
   );
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
       <div className="lg:w-3/4">
         <div className="mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <h2 className="text-2xl font-bold">My {currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)} Items</h2>
+          <h2 className="text-2xl font-bold">
+            {currentCategory === 'all'
+              ? 'All Items'
+              : `My ${currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)} Items`}
+          </h2>
           
           <div className="relative w-full md:w-64">
             <input
@@ -54,6 +59,10 @@ const ItemList: React.FC = () => {
                 item={item}
                 onMarkAsUsed={markItemAsUsed}
                 onToggleOpened={toggleItemOpened}
+                onEditItem={(editedItem) => {
+                  // Add your logic for editing the item here
+                  console.log('Edit item:', editedItem);
+                }}
               />
             ))}
           </div>

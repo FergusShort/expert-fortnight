@@ -21,15 +21,15 @@ const ItemInfoModal: React.FC<ItemInfoModalProps> = ({ item, onClose }) => {
       setError(null);
       try {
         const { data, error } = await supabase
-        .from('item_info')
-        .select('*')
-        .eq('item_id', item.id)
-        .single<ItemInfo>();
+          .from('item_info')
+          .select('*')
+          .eq('item_id', item.id)
+          .maybeSingle<ItemInfo>(); // Use maybeSingle()
 
         if (error) {
           setError(error.message);
         } else {
-          setItemInfo(data);
+          setItemInfo(data); // data will be null if no matching row
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -57,8 +57,30 @@ const ItemInfoModal: React.FC<ItemInfoModalProps> = ({ item, onClose }) => {
     );
   }
 
+  //  Handle the case where no item info is found.
   if (!itemInfo) {
-    return null; // Or a message indicating no extra info is available
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+          <div className="flex justify-end">
+            <Button
+              variant="outline" // Changed from "ghost" to "outline"
+              size="sm" // Changed from "icon" to "sm" to match the allowed types.
+              onClick={onClose}
+              className="ml-auto p-1" // Added p-1 to the button
+            >
+              <X size={20} />
+            </Button>
+          </div>
+          <p className="text-gray-700">No additional information available for this item.</p>
+          <div className="mt-4 flex justify-end">
+            <Button variant="primary" onClick={onClose}>
+              Close
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -6,6 +6,7 @@ export interface Item {
   id: string; // Assuming UUID for items now
   name: string;
   category: Category;
+  foodsubcategory?: 'produce' | 'dairy' | 'meat' | 'bakery' | 'canned' | 'frozen' | 'other';
   expiry_date?: Date;
   opened: boolean;
   quantity: number;
@@ -63,6 +64,7 @@ export interface ShoppingListItem {
   user_id?: string; // uuid in SQL
   image_url?: string | null; // Keeping flexible as your SQL is text
   category: Category | string; // Keeping flexible as your SQL is text
+  foodsubcategory?: 'produce' | 'dairy' | 'meat' | 'bakery' | 'canned' | 'frozen' | 'other';
 }
 
 export interface UsedItem {
@@ -75,4 +77,6 @@ export interface UsedItem {
   used_date: Date | null; // timestamp in SQL
   added_to_shopping_list: boolean;
     user_id?: string; // uuid in SQL
+    foodsubcategory?: 'produce' | 'dairy' | 'meat' | 'bakery' | 'canned' | 'frozen' | 'other';
+
 }

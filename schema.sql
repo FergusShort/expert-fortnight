@@ -16,6 +16,9 @@ CREATE TABLE public.items (
     unit VARCHAR,
     image_url VARCHAR,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL
+    foodSubcategory VARCHAR (255),
+CONSTRAINT valid_food_subcategory
+CHECK (category <> 'food' OR foodSubcategory IN ('produce', 'dairy', 'meat', 'bakery', 'canned', 'frozen', 'other'));
 );
 
 CREATE TABLE public.item_info (
@@ -67,6 +70,10 @@ CREATE TABLE public.shopping_list (
     added TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::TEXT, now()) NOT NULL,
     image_url VARCHAR,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL
+    foodSubcategory VARCHAR (255),
+CONSTRAINT valid_food_subcategory
+CHECK (category <> 'food' OR foodSubcategory IN ('produce', 'dairy', 'meat', 'bakery', 'canned', 'frozen', 'other'));
+
 );
 
 CREATE TABLE public.used_items (
@@ -79,6 +86,10 @@ CREATE TABLE public.used_items (
     image_url VARCHAR,
     added_to_shopping_list BOOLEAN DEFAULT FALSE,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL
+    foodSubcategory VARCHAR (255),
+CONSTRAINT valid_food_subcategory
+CHECK (category <> 'food' OR foodSubcategory IN ('produce', 'dairy', 'meat', 'bakery', 'canned', 'frozen', 'other'));
+
 );
 
 -- Enable Row Level Security on all tables

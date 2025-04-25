@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Category } from '../../types';
-import { ChevronDown, ShoppingBag, Pill, Scissors, SprayCan as Spray, Dog } from 'lucide-react';
+import { ChevronDown, ShoppingBag, Pill, Scissors, SprayCan as Spray, Dog, Package } from 'lucide-react';
 
 interface CategoryDropdownProps {
-  currentCategory: Category;
-  onChange: (category: Category) => void;
+  currentCategory: Category | 'all';
+  onChange: (category: Category | 'all') => void;
 }
 
 const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
@@ -13,7 +13,8 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const categories: { value: Category; label: string; icon: React.ReactNode }[] = [
+  const categories: { value: Category | 'all'; label: string; icon: React.ReactNode }[] = [
+    { value: 'all', label: 'All Categories', icon: <Package size={18} /> },
     { value: 'food', label: 'Food', icon: <ShoppingBag size={18} /> },
     { value: 'pharma', label: 'Pharmacy', icon: <Pill size={18} /> },
     { value: 'cosmetics', label: 'Cosmetics', icon: <Scissors size={18} /> },
@@ -23,7 +24,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
 
   const currentCategoryData = categories.find(cat => cat.value === currentCategory) || categories[0];
 
-  const handleSelect = (category: Category) => {
+  const handleSelect = (category: Category | 'all') => {
     onChange(category);
     setIsOpen(false);
   };
